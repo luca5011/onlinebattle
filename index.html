@@ -1,0 +1,135 @@
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Online Battle</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Orbitron', sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  overflow: hidden;
+}
+
+/* 배경 애니메이션 */
+body::before {
+  content: "";
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0,255,255,0.15), transparent 60%);
+  animation: moveBg 10s linear infinite;
+}
+
+@keyframes moveBg {
+  0% { transform: translate(0,0); }
+  50% { transform: translate(-25%, -25%); }
+  100% { transform: translate(0,0); }
+}
+
+/* 메인 박스 */
+.container {
+  position: relative;
+  text-align: center;
+  padding: 50px;
+  border-radius: 20px;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 40px rgba(0,255,255,0.4);
+}
+
+/* 제목 */
+h1 {
+  font-size: 50px;
+  margin-bottom: 40px;
+  text-shadow: 0 0 20px cyan;
+}
+
+/* 버튼 스타일 */
+.btn {
+  display: block;
+  width: 250px;
+  margin: 20px auto;
+  padding: 15px;
+  font-size: 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 오프라인 버튼 */
+.offline {
+  background: linear-gradient(45deg, #00c6ff, #0072ff);
+}
+
+/* 온라인 버튼 */
+.online {
+  background: linear-gradient(45deg, #ff416c, #ff4b2b);
+}
+
+/* hover 효과 */
+.btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px white;
+}
+
+/* 클릭 시 효과 */
+.btn:active {
+  transform: scale(0.95);
+}
+
+/* 하단 텍스트 */
+.footer {
+  margin-top: 30px;
+  font-size: 12px;
+  opacity: 0.5;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+  <h1>ONLINE BATTLE</h1>
+
+  <button class="btn offline" onclick="goOffline()">🎮 오프라인 모드</button>
+  <button class="btn online" onclick="goOnline()">🌐 온라인 모드</button>
+
+  <div class="footer">made by github project</div>
+</div>
+
+<script>
+function goOffline() {
+  alert("오프라인 모드 선택됨");
+  // 나중에 offline.html로 이동
+  // location.href = "offline.html";
+}
+
+function goOnline() {
+  alert("온라인 모드 선택됨");
+  // 나중에 online.html로 이동
+  // location.href = "online.html";
+}
+</script>
+
+</body>
+</html>
+```
