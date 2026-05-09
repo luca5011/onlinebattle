@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>피카츄배구</title>
+    <style>
+        canvas {
+            background: skyblue;
+            display: block;
+            margin: 0 auto;
+        }
+        #score {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<canvas id="game" width="800" height="400"></canvas>
+<div id="score">0 : 0</div>
+<script>
+let canvas = document.getElementById("game");
+let ctx = canvas.getContext("2d");
+
+let p1 = { x: 100, y: 300, vx: 0, vy: 0, jump: false };
+let p2 = { x: 700, y: 300, vx: 0, vy: 0, jump: false };
+let ball = { x: 400, y: 100, vx: 3, vy: -2 };
+
+let gravity = 0.3;
+let netX = 400;
+let p1score = 0;
+let p2score = 0;
+let gameOver = false;
+
+let keys = {};
+
+document.addEventListener("keydown", e => keys[e.key] = true);
+document.addEventListener("keyup", e => keys[e.key] = false);
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 땅
+    ctx.fillStyle = "green";
+    ctx.fillRect(0, 350, 800, 50);
+
+    // 네트
+    ctx.fillStyle = "gray";
+    ctx.fillRect(netX - 5, 250, 10, 100);
+
+    // 피카츄 1P
+    ctx.fillStyle = "yellow";
+    ctx.beginPath();
+    ctx.arc(p1.x, p1.y, 25, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 피카츄 2P
+    ctx.fillStyle = "orange";
+    ctx.beginPath();
+    ctx.arc(p2.x, p2.y, 25, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 공
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, 15, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 승리 시
+    if (gameOver) {
+        ctx.fillStyle = "red";
+        ctx.font = "48px Arial";
+        ctx.fillText(p1score >= 15 ? "1P WIN" : "2P WIN", 300, 200);
+    }
+}
+
+function smash(player) {
+    let dx = ball.x - player.x;
+    let dy = ball.y - player.y;
+    let dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < 50 && ball.y < player.y) {
+        ball.vx = dx > 0 ? 7 : -7;
+        ball.vy = -7;
+    }
+}
+
+function collide(player) {
+    let dx = ball.x - player.x;
+    let dy = ball.y - player.y;
+    let dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < 40) {
+        let angle = Math.atan2(dy, dx);
+        ball.vx = Math.cos(angle) * 4;
+        ball.vy = Math.sin(angle) * 4;
+    }
+}
+
+function update() {
+    if (gameOver) return;
+
+    // 피카츄 이동
+    if (keys["d"]) p1.vx = -4;
+    else if (keys["g"]) p1.vx = 4;
+    else p1.vx = 0;
+
+    if (keys["ArrowLeft"]) p2.vx = -4;
+    else if (keys["ArrowRight"]) p2.vx = 4;
+    else p2.vx = 0;
+
+    // 점프
+    if (keys["r"] && !p1.jump) {
+        p1.vy = -8;
+        p1.jump = true;
+    }
+    if (keys["ArrowUp"] && !p2.jump) {
+        p2.vy = -8;
+        p2.jump = true;
+    }
+
+    // 스매시
+    if (keys["z"]) smash(p1);
+    if (keys["Enter"]) smash(p2);
+
+    // 중력 적용
+    [p1, p2].forEach(p => {
+        p.vy += gravity;
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // 네트 충돌 방지 (바닥 근처일 때만 막기)
+        if (p.y >= 280) {
+            if (p.x > netX - 30 && p.x < netX + 30) {
+                p.x = p.x < netX ? netX - 30 : netX + 30;
+            }
+        }
+
+        // 화면 경계
+        if (p.x < 25) p.x = 25;
+        if (p.x > 775) p.x = 775;
+
+        if (p.y >= 300) {
+            p.y = 300;
+            p.vy = 0;
+            p.jump = false;
+        }
+    });
+
+    // 공 물리
+    ball.vy += gravity;
+    ball.x += ball.vx;
+    ball.y += ball.vy;
+
+    // 충돌
+    collide(p1);
+    collide(p2);
+
+    // 바닥
+    if (ball.y > 335) {
+        if (ball.x < netX) p2score++;
+        else p1score++;
+        document.getElementById("score").innerText = `${p1score} : ${p2score}`;
+        if (p1score >= 15 || p2score >= 15) {
+            gameOver = true;
+        }
+        ball.x = 400;
+        ball.y = 100;
+        ball.vx = 3 * (Math.random() > 0.5 ? 1 : -1);
+        ball.vy = -2;
+    }
+
+    // 벽 충돌
+    if (ball.x < 15 || ball.x > 785) ball.vx *= -1;
+    if (ball.y < 15) ball.vy *= -1;
+
+    // 네트 충돌
+    if (ball.x > netX - 10 && ball.x < netX + 10 && ball.y > 250) ball.vx *= -1;
+}
+
+function loop() {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+</body>
+</html>
