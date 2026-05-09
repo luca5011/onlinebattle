@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>경찰 vs 도망자</title>
+
+<style>
+
+body{
+    margin:0;
+    overflow:hidden;
+    background:#111;
+    color:white;
+    font-family:Arial;
+}
+
+canvas{
+    background:#222;
+    display:block;
+    margin:auto;
+}
+
+#ui{
+    position:absolute;
+    top:10px;
+    left:10px;
+    font-size:28px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="ui">
+⏰ <span id="timer">60</span>
+</div>
+
+<canvas id="game" width="1000" height="600"></canvas>
+
+<script>
+
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+const keys={};
+
+document.addEventListener("keydown",
+e=>keys[e.key]=true);
+
+document.addEventListener("keyup",
+e=>keys[e.key]=false);
+
+const walls=[
+
+{x:200,y:100,w:50,h:400},
+{x:400,y:0,w:50,h:300},
+{x:600,y:200,w:50,h:400},
+{x:750,y:0,w:50,h:300}
+
+];
+
+const police={
+x:100,
+y:100,
+size:25,
+speed:3.8
+};
+
+const runner={
+x:900,
+y:500,
+size:25,
+speed:3.3
+};
+
+let time=60;
+let gameOver=false;
+
+setInterval(()=>{
+
+if(gameOver) return;
+
+time--;
+
+document.getElementById("timer")
+.innerText=time;
+
+if(time<=0){
+
+gameOver=true;
+
+alert("🏃 도망자 승리!");
+
+}
+
+},1000);
+
+function movePlayer(player,up,down,left,right){
+
+let oldX=player.x;
+let oldY=player.y;
+
+if(keys[up]) player.y-=player.speed;
+if(keys[down]) player.y+=player.speed;
+if(keys[left]) player.x-=player.speed;
+if(keys[right]) player.x+=player.speed;
+
+for(let wall of walls){
+
+if(
+player.x+player.size>wall.x &&
+player.x-player.size<wall.x+wall.w &&
+player.y+player.size>wall.y &&
+player.y-player.size<wall.y+wall.h
+){
+
+player.x=oldX;
+player.y=oldY;
+
+}
+}
+
+}
+
+function update(){
+
+if(gameOver) return;
+
+movePlayer(
+police,
+"w","s","a","d"
+);
+
+movePlayer(
+runner,
+"ArrowUp",
+"ArrowDown",
+"ArrowLeft",
+"ArrowRight"
+);
+
+let dx=police.x-runner.x;
+let dy=police.y-runner.y;
+
+let dist=Math.sqrt(dx*dx+dy*dy);
+
+if(dist<40){
+
+gameOver=true;
+
+alert("👮 경찰 승리!");
+
+}
+
+}
+
+function draw(){
+
+ctx.clearRect(0,0,1000,600);
+
+for(let wall of walls){
+
+ctx.fillStyle="#666";
+
+ctx.fillRect(
+wall.x,
+wall.y,
+wall.w,
+wall.h
+);
+
+}
+
+ctx.fillStyle="blue";
+
+ctx.beginPath();
+
+ctx.arc(
+police.x,
+police.y,
+police.size,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+ctx.fillStyle="red";
+
+ctx.beginPath();
+
+ctx.arc(
+runner.x,
+runner.y,
+runner.size,
+0,
+Math.PI*2
+);
+
+ctx.fill();
+
+}
+
+function loop(){
+
+update();
+
+draw();
+
+requestAnimationFrame(loop);
+
+}
+
+loop();
+
+</script>
+
+</body>
+</html>
