@@ -2,51 +2,78 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>오프라인 게임 선택</title>
+<title>랜덤 미니게임</title>
 
 <style>
+
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
 body{
     margin:0;
-    height:100vh;
+    background:#111;
+    overflow:hidden;
+    font-family:'Orbitron',sans-serif;
+    color:white;
+
     display:flex;
     justify-content:center;
     align-items:center;
-    background:linear-gradient(135deg,#141e30,#243b55);
-    font-family:'Orbitron',sans-serif;
-    color:white;
-}
+    flex-direction:column;
 
-.container{
-    text-align:center;
-    background:rgba(0,0,0,0.5);
-    padding:50px;
-    border-radius:20px;
-    box-shadow:0 0 30px cyan;
+    height:100vh;
 }
 
 h1{
+    font-size:60px;
     margin-bottom:40px;
-    font-size:48px;
+    color:cyan;
+    text-shadow:0 0 20px cyan;
 }
 
-.game-btn{
-    display:block;
-    width:320px;
-    margin:20px auto;
-    padding:20px;
-    font-size:24px;
-    border:none;
-    border-radius:15px;
-    cursor:pointer;
-    transition:0.3s;
-    color:white;
+#selector{
+
+    width:900px;
+    height:220px;
+
+    overflow:hidden;
+
+    border:5px solid cyan;
+    border-radius:20px;
+
+    position:relative;
+
+    background:#222;
 }
 
-.game-btn:hover{
-    transform:scale(1.08);
-    box-shadow:0 0 20px white;
+#track{
+
+    display:flex;
+
+    position:absolute;
+
+    left:0;
+    top:0;
+}
+
+.card{
+
+    width:250px;
+    height:200px;
+
+    margin:10px;
+
+    border-radius:20px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:30px;
+    font-weight:bold;
+
+    flex-shrink:0;
+
+    box-shadow:0 0 20px black;
 }
 
 .volley{
@@ -56,24 +83,153 @@ h1{
 .omok{
     background:linear-gradient(45deg,#56ab2f,#a8e063);
 }
+
+.cop{
+    background:linear-gradient(45deg,#36d1dc,#5b86e5);
+}
+
+#pointer{
+
+    position:absolute;
+
+    top:0;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:8px;
+    height:100%;
+
+    background:white;
+
+    box-shadow:0 0 20px white;
+
+    z-index:10;
+}
+
+button{
+
+    margin-top:40px;
+
+    padding:20px 40px;
+
+    font-size:28px;
+
+    border:none;
+    border-radius:15px;
+
+    cursor:pointer;
+
+    background:cyan;
+}
+
+button:hover{
+
+    transform:scale(1.08);
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h1>OFFLINE MODE</h1>
+<h1>🎲 RANDOM GAME 🎲</h1>
 
-    <button class="game-btn volley"
-    onclick="location.href='pikavolley.html'">
-    ⚡ 피카츄 배구
-    </button>
+<div id="selector">
 
-    <button class="game-btn omok"
-    onclick="location.href='blindomok.html'">
-    ⚫ 블라인드 오목
-    </button>
+    <div id="pointer"></div>
+
+    <div id="track"></div>
+
 </div>
+
+<button onclick="startRoll()">
+게임 랜덤 선택
+</button>
+
+<script>
+
+const games=[
+
+{
+name:"⚡ 피카츄 배구",
+class:"volley",
+url:"pikavolley.html"
+},
+
+{
+name:"⚫ 블라인드 오목",
+class:"omok",
+url:"blindomok.html"
+},
+
+{
+name:"👮 경찰 vs 도망자",
+class:"cop",
+url:"copchase.html"
+}
+
+];
+
+const track=document.getElementById("track");
+
+for(let i=0;i<20;i++){
+
+    const game=games[i%games.length];
+
+    const card=document.createElement("div");
+
+    card.className=`card ${game.class}`;
+
+    card.innerText=game.name;
+
+    track.appendChild(card);
+}
+
+let rolling=false;
+
+function startRoll(){
+
+    if(rolling) return;
+
+    rolling=true;
+
+    let speed=45;
+
+    let pos=0;
+
+    const target=
+    Math.floor(Math.random()*games.length);
+
+    let totalDistance=
+    5000 + target*270;
+
+    const interval=setInterval(()=>{
+
+        pos-=speed;
+
+        track.style.left=pos+"px";
+
+        speed*=0.985;
+
+        if(Math.abs(pos)>=totalDistance){
+
+            clearInterval(interval);
+
+            const selected=
+            games[target];
+
+            setTimeout(()=>{
+
+                location.href=selected.url;
+
+            },1000);
+        }
+
+    },16);
+}
+
+</script>
 
 </body>
 </html>
