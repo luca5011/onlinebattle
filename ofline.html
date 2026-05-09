@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>오프라인 게임 선택</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#141e30,#243b55);
+    font-family:'Orbitron',sans-serif;
+    color:white;
+}
+
+.container{
+    text-align:center;
+    background:rgba(0,0,0,0.5);
+    padding:50px;
+    border-radius:20px;
+    box-shadow:0 0 30px cyan;
+}
+
+h1{
+    margin-bottom:40px;
+    font-size:48px;
+}
+
+.game-btn{
+    display:block;
+    width:320px;
+    margin:20px auto;
+    padding:20px;
+    font-size:24px;
+    border:none;
+    border-radius:15px;
+    cursor:pointer;
+    transition:0.3s;
+    color:white;
+}
+
+.game-btn:hover{
+    transform:scale(1.08);
+    box-shadow:0 0 20px white;
+}
+
+.volley{
+    background:linear-gradient(45deg,#ff9966,#ff5e62);
+}
+
+.omok{
+    background:linear-gradient(45deg,#56ab2f,#a8e063);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>OFFLINE MODE</h1>
+
+    <button class="game-btn volley"
+    onclick="location.href='pikavolley.html'">
+    ⚡ 피카츄 배구
+    </button>
+
+    <button class="game-btn omok"
+    onclick="location.href='blindomok.html'">
+    ⚫ 블라인드 오목
+    </button>
+</div>
+
+</body>
+</html>
