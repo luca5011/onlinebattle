@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>연타 레이스</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#111;
+    overflow:hidden;
+    font-family:Arial;
+    color:white;
+    text-align:center;
+}
+
+h1{
+    margin-top:20px;
+    font-size:50px;
+}
+
+#track{
+
+    width:1000px;
+    height:300px;
+
+    margin:40px auto;
+
+    background:#333;
+
+    position:relative;
+
+    border-radius:20px;
+}
+
+.player{
+
+    width:60px;
+    height:60px;
+
+    border-radius:50%;
+
+    position:absolute;
+
+    left:0;
+}
+
+#p1{
+    background:cyan;
+    top:70px;
+}
+
+#p2{
+    background:red;
+    top:170px;
+}
+
+#line{
+
+    position:absolute;
+
+    right:80px;
+
+    width:10px;
+    height:100%;
+
+    background:white;
+}
+
+#info{
+
+    font-size:28px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>🏃 연타 레이스 🏃</h1>
+
+<div id="info">
+1P: A키 연타 🔵<br>
+2P: L키 연타 🔴
+</div>
+
+<div id="track">
+
+<div id="line"></div>
+
+<div class="player" id="p1"></div>
+<div class="player" id="p2"></div>
+
+</div>
+
+<script>
+
+let p1=0;
+let p2=0;
+
+let gameOver=false;
+
+document.addEventListener("keydown",e=>{
+
+    if(gameOver) return;
+
+    if(e.key==="a"){
+
+        p1+=8;
+
+        document.getElementById("p1")
+        .style.left=p1+"px";
+    }
+
+    if(e.key==="l"){
+
+        p2+=8;
+
+        document.getElementById("p2")
+        .style.left=p2+"px";
+    }
+
+    if(p1>=850){
+
+        gameOver=true;
+
+        alert("🔵 1P 승리!");
+    }
+
+    if(p2>=850){
+
+        gameOver=true;
+
+        alert("🔴 2P 승리!");
+    }
+
+});
+
+</script>
+
+</body>
+</html>
